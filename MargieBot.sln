@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MargieBot.UI", "MargieBot.U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MargieBot", "MargieBot\MargieBot.csproj", "{1C8DACEF-74F1-45D2-AC76-B65DFB3DBCA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MargieBot.Tests", "MargieBot.Tests\MargieBot.Tests.csproj", "{2E347D00-FB86-4EF2-95BC-D8EEB98584DD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,12 +26,6 @@ Global
 		{1C8DACEF-74F1-45D2-AC76-B65DFB3DBCA9}.InkyBot|Any CPU.Build.0 = InkyBot|Any CPU
 		{1C8DACEF-74F1-45D2-AC76-B65DFB3DBCA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C8DACEF-74F1-45D2-AC76-B65DFB3DBCA9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E347D00-FB86-4EF2-95BC-D8EEB98584DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E347D00-FB86-4EF2-95BC-D8EEB98584DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E347D00-FB86-4EF2-95BC-D8EEB98584DD}.InkyBot|Any CPU.ActiveCfg = InkyBot|Any CPU
-		{2E347D00-FB86-4EF2-95BC-D8EEB98584DD}.InkyBot|Any CPU.Build.0 = InkyBot|Any CPU
-		{2E347D00-FB86-4EF2-95BC-D8EEB98584DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E347D00-FB86-4EF2-95BC-D8EEB98584DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
