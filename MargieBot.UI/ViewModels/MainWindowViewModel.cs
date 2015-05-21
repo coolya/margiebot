@@ -5,13 +5,11 @@ using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Bazam.WPF.UIHelpers;
 using Bazam.WPF.ViewModels;
-using MargieBot.ExampleResponseProcessors.Models;
-using MargieBot.ExampleResponseProcessors.ResponseProcessors;
 using MargieBot.MessageProcessors;
 using MargieBot.Models;
 using MargieBot.UI.Infrastructure.BotResponseProcessors;
 using MargieBot.UI.Infrastructure.BotResponseProcessors.DnDResponseProcessors;
-using MargieBot.UI.Infrastructure.BotResponseProcessors.GW2ResponseProcessors;
+using MargieBot.UI.Infrastructure.Models;
 
 namespace MargieBot.UI.ViewModels
 {
@@ -171,7 +169,7 @@ namespace MargieBot.UI.ViewModels
         /// <returns>A list of aliases that will cause the BotWasMentioned property of the ResponseContext to be true</returns>
         private IReadOnlyList<string> GetAliases()
         {
-            return new List<string>() { "Margie" };
+            return new List<string>() { "Inky" };
         }
 
         /// <summary>
@@ -190,19 +188,8 @@ namespace MargieBot.UI.ViewModels
 
             // custom processors
             responseProcessors.Add(new RollResponseProcessor());
-            responseProcessors.Add(new CharacterResponseProcessor());
-            responseProcessors.Add(new WvWResponseProcessor());
-            responseProcessors.Add(new XAllTheYResponseProcessor());
-
-            // examples of semi-complex or "messier" processors (created in separate classes)
-            responseProcessors.Add(new ScoreResponseProcessor());
-            responseProcessors.Add(new ScoreboardRequestResponseProcessor());
-            responseProcessors.Add(new WhatsNewResponseProcessor());
-            responseProcessors.Add(new WikipediaResponseProcessor());
-
-            // if you want to use these, you'll need to sign up for api keys from http://wunderground.com and http://www.dictionaryapi.com/ - they're free! Put them in your app.config and you're good to go.
-            responseProcessors.Add(new WeatherRequestResponseProcessor(ConfigurationManager.AppSettings["wundergroundApiKey"]));
-            responseProcessors.Add(new DefineResponseProcessor(ConfigurationManager.AppSettings["dictionaryApiKey"]));
+            // need to make his own
+            //responseProcessors.Add(new CharacterResponseProcessor());
 
             // examples of simple-ish "inline" processors
             // this processor hits on Slackbot when he talks 1/4 times or so
@@ -220,18 +207,18 @@ namespace MargieBot.UI.ViewModels
             // example of Supa Fly Mega EZ Syntactic Sugary Response Processors (not their actual name)
             _Margie
                 .RespondsTo("get on that")
-                .With("Sure, hun!")
-                .With("I'll see what I can do, sugar.")
-                .With("I'll try. No promises, though!")
+                .With("Pitiful mortal. I take not orders from the likes of you.")
+                .With("Don't make me laugh.")
+                .With("I'll consider it... worm.")
                 .IfBotIsMentioned();
 
             // you can do these with regexes too
             _Margie
                 .RespondsTo("what (can|do) you do", true)
-                .With(@"Lots o' things! I mean, potentially, anyway. Right now I'm real good at keepin' score (try plus-one-ing one of your buddies sometime). I'm learnin' about how to keep up with the weather from my friend DonnaBot. I also can't quite keep my eyes off a certain other bot around here :) If there's anythin' else you think I can help y'all with, just say so! The feller who made me tends to keep an eye on me and see how I'm doin'. So there ya have it.")
+                .With(@"I stand for dark elves across this realm. Also I enjoy petting Ahrek's lost backpack and cackling to myself.")
                 .IfBotIsMentioned();
 
-            // this last one just responds if someone says "hi" or whatever to Margie, but only if no other processor has responded
+            // this last one just responds if someone says "hi" or whatever to the bot, but only if no other processor has responded
             responseProcessors.Add(_Margie.CreateResponseProcessor(
                 (ResponseContext context) => {
                     return

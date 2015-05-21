@@ -51,6 +51,16 @@
   <PropertyGroup>
     <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'InkyBot|AnyCPU'">
+    <OutputPath>bin\InkyBot\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Bazam, Version=2.6.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -94,17 +104,9 @@
     </ApplicationDefinition>
     <Compile Include="Infrastructure\BotResponseProcessors\DnDResponseProcessors\CharacterResponseProcessor.cs" />
     <Compile Include="Infrastructure\BotResponseProcessors\DnDResponseProcessors\RollResponseProcessor.cs" />
-    <Compile Include="Infrastructure\BotResponseProcessors\GW2ResponseProcessors\WvWResponseProcessor.cs" />
-    <Compile Include="Infrastructure\BotResponseProcessors\XAllTheYResponseProcessor.cs" />
     <Compile Include="Infrastructure\Models\DnD\Character.cs" />
     <Compile Include="Infrastructure\Models\DnD\Die.cs" />
-    <Compile Include="Infrastructure\Models\GW2\WvWColor.cs" />
-    <Compile Include="Infrastructure\Models\GW2\WvWMap.cs" />
-    <Compile Include="Infrastructure\Models\GW2\WvWMapType.cs" />
-    <Compile Include="Infrastructure\Models\GW2\WvWMatch.cs" />
-    <Compile Include="Infrastructure\Models\GW2\WvWMatchStandings.cs" />
-    <Compile Include="Infrastructure\Models\GW2\WvWWorld.cs" />
-    <Compile Include="Infrastructure\Models\GW2\WvWWorldStanding.cs" />
+    <Compile Include="Infrastructure\Models\Phrasebook.cs" />
     <Compile Include="Views\Helpers\Controls\MargiesModernWindow.cs" />
     <Compile Include="Views\Helpers\ValueConverters\BooleanInversionConverter.cs" />
     <Compile Include="Views\Helpers\Behaviors\TextChangedAppendBehavior.cs" />
@@ -202,7 +204,6 @@
   <ItemGroup>
     <Resource Include="Assets\logo.ico" />
     <None Include="Assets\logo.svg" />
-    <None Include="Assets\margie-full.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="logo.ico" />
@@ -211,20 +212,13 @@
     <Resource Include="Assets\logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MargieBot.ExampleResponseProcessors\MargieBot.ExampleResponseProcessors.csproj">
-      <Project>{c214b6b0-b876-4f24-9417-a05fc6d4b616}</Project>
-      <Name>MargieBot.ExampleResponseProcessors</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MargieBot\MargieBot.csproj">
       <Project>{1c8dacef-74f1-45d2-ac76-b65dfb3dbca9}</Project>
       <Name>MargieBot</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\margie-warlock.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\margie-emoji.jpg" />
+    <Resource Include="Assets\inky-full.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

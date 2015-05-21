@@ -34,6 +34,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'InkyBot|AnyCPU'">
+    <OutputPath>bin\InkyBot\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="NSubstitute">
       <HintPath>..\packages\NSubstitute.1.8.1.0\lib\net45\NSubstitute.dll</HintPath>
@@ -58,10 +67,6 @@
     <Compile Include="BotNameRegexComposerTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MargieBot.ExampleResponseProcessors\MargieBot.ExampleResponseProcessors.csproj">
-      <Project>{c214b6b0-b876-4f24-9417-a05fc6d4b616}</Project>
-      <Name>MargieBot.ExampleResponseProcessors</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MargieBot\MargieBot.csproj">
       <Project>{1c8dacef-74f1-45d2-ac76-b65dfb3dbca9}</Project>
       <Name>MargieBot</Name>
