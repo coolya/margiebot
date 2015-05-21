@@ -8,7 +8,7 @@
 
     <!--Colors-->
     <!--Accent color named differently to avoid collision with MUI, ick -->
-    <Color x:Key="MyAccentColor">#AD91C2</Color>
+    <Color x:Key="MyAccentColor">#FF3200</Color>
     <Color x:Key="BackgroundColor">#333333</Color>
     <Color x:Key="ForegroundColor">#DDDDDD</Color>
     <Color x:Key="SubtleColor">#888888</Color>
