@@ -214,7 +214,7 @@ namespace MargieBot.UI.ViewModels
 
             // you can do these with regexes too
             _Margie
-                .RespondsTo("what (can|do) you do", true)
+                .RespondsTo("[Ww]hat (can|do) you do", true)
                 .With(@"I stand for dark elves across this realm. Also I enjoy petting Ahrek's lost backpack and cackling to myself.")
                 .IfBotIsMentioned();
 
