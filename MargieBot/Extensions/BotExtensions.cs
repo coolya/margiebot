@@ -9,9 +9,9 @@ namespace MargieBot
 {
     public static class BotExtensions
     {
-        public static IResponder CreateResponder(this Bot bot, Func<ResponseContext, bool> canRespond, Func<ResponseContext, string> getResponse)
+        public static IResponder CreateResponder(this Bot bot, Func<SlackMessage, bool> canRespond, Func<SlackMessage, string> getResponse)
         {
-            return new SimpleResponder() { CanRespondFunction = canRespond, GetResponseFunctions = new List<Func<ResponseContext, BotMessage>>() { (ResponseContext context) => { return new BotMessage() { Text = getResponse(context) }; } } };
+            return new SimpleResponder() { CanRespondFunction = canRespond, GetResponseFunctions = new List<Func<SlackMessage, BotMessage>>() { (SlackMessage context) => { return new BotMessage() { Text = getResponse(context) }; } } };
         }
 
         public static MargieSimpleResponseChainer RespondsTo(this Bot bot, string phrase, bool isRegex = false)
@@ -19,12 +19,12 @@ namespace MargieBot
             MargieSimpleResponseChainer chainer = new MargieSimpleResponseChainer();
             chainer.Responder = new SimpleResponder();
             if (isRegex) {
-                chainer.Responder.CanRespondFunction = (ResponseContext context) => {
+                chainer.Responder.CanRespondFunction = (SlackMessage context) => {
                     return Regex.IsMatch(context.Message.Text, phrase);
                 };
             }
             else {
-                chainer.Responder.CanRespondFunction = (ResponseContext context) => {
+                chainer.Responder.CanRespondFunction = (SlackMessage context) => {
                     return Regex.IsMatch(context.Message.Text, @"\b" + Regex.Escape(phrase) + @"\b", RegexOptions.IgnoreCase);
                 };
             }
@@ -45,14 +45,14 @@ namespace MargieBot
 
             public MargieSimpleResponseChainer With(string response)
             {
-                this.Responder.GetResponseFunctions.Add((ResponseContext context) => { return new BotMessage() { Text = response }; });
+                this.Responder.GetResponseFunctions.Add((SlackMessage context) => { return new BotMessage() { Text = response }; });
                 return this;
             }
 
             public MargieSimpleResponseChainer IfBotIsMentioned()
             {
-                Func<ResponseContext, bool> oldResponseCheck = this.Responder.CanRespondFunction;
-                this.Responder.CanRespondFunction = (ResponseContext context) => { return oldResponseCheck(context) && context.Message.MentionsBot; };
+                Func<SlackMessage, bool> oldResponseCheck = this.Responder.CanRespondFunction;
+                this.Responder.CanRespondFunction = (SlackMessage context) => { return oldResponseCheck(context) && context.Message.MentionsBot; };
 
                 return this;
             }

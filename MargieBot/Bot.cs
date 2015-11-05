@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Bazam.NoobWebClient;
 using MargieBot.EventHandlers;
 using MargieBot.Models;
 using MargieBot.Responders;
@@ -12,11 +11,41 @@ using MargieBot.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WebSocketSharp;
+using System.Net.Http;
+
 
 namespace MargieBot
 {
-    public class Bot
+    public class Bot : IObservable<SlackMessage>
     {
+        #region IObservable implementation
+
+        private class Disposable : IDisposable {
+            private readonly Action dispose;
+            public Disposable(Action a)
+            {
+                dispose = a;
+            }
+
+            #region IDisposable implementation
+
+            public void Dispose()
+            {
+                dispose();
+            }
+
+            #endregion
+        }
+
+        private List<IObserver<MargieBot.Models.SlackMessage>> observers = new List<IObserver<MargieBot.Models.SlackMessage>>();
+        public IDisposable Subscribe(IObserver<MargieBot.Models.SlackMessage> observer)
+        {
+            this.observers.Add(observer);
+            return new Disposable(() => this.observers.Remove(observer));
+        }
+
+        #endregion
+
         #region Private properties
         private string _BotNameRegex;
         private string BotNameRegex
@@ -112,8 +141,10 @@ namespace MargieBot
             // kill the regex for our bot's name - we'll rebuild it upon request with some of the info we get here
             BotNameRegex = string.Empty;
 
-            NoobWebClient client = new NoobWebClient();
-            string json = await client.GetResponse("https://slack.com/api/rtm.start", RequestMethod.Post, "token", this.SlackKey);
+            var client = new HttpClient();
+            var cnt = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>() { MakeKeyValue("token", this.SlackKey)});
+            var rsp = await client.PostAsync("https://slack.com/api/rtm.start", cnt);
+            var json = await rsp.Content.ReadAsStringAsync();
             JObject jData = JObject.Parse(json);
 
             TeamID = jData["team"]["id"].Value<string>();
@@ -216,7 +247,7 @@ namespace MargieBot
 
                 string messageText = (jObject["text"] != null ? jObject["text"].Value<string>() : null);
                 // check to see if bot has been mentioned
-                SlackMessage message = new SlackMessage() {
+                SlackMessageContent message = new SlackMessageContent() {
                     ChatHub = hub,
                     MentionsBot = (messageText != null ? Regex.IsMatch(messageText, BotNameRegex, RegexOptions.IgnoreCase) : false),
                     RawData = json,
@@ -225,13 +256,20 @@ namespace MargieBot
                     User = (jObject["user"] != null ? new SlackUser() { ID = jObject["user"].Value<string>() } : null)
                 };
 
-                ResponseContext context = new ResponseContext() {
+                SlackMessage context = new SlackMessage() {
+                    Creator = this,
                     BotHasResponded = false,
                     BotUserID = UserID,
                     BotUserName = UserName,
                     Message = message,
                     TeamID = this.TeamID,
                     UserNameCache = new ReadOnlyDictionary<string, string>(this.UserNameCache)
+                };
+
+                context.Answer = async (arg) =>
+                {
+                    await this.Say(arg, context);
+                    context.BotHasResponded = true;
                 };
 
                 // if the end dev has added any static entries to the ResponseContext collection of Bot, add them to the context being passed to the responders.
@@ -243,6 +281,12 @@ namespace MargieBot
 
                 // margie can never respond to herself and requires that the message have text and be from an actual person
                 if (message.User != null && message.User.ID != UserID && message.Text != null) {
+
+                    foreach (var obs in observers)
+                    {
+                        obs.OnNext(context);
+                    }
+
                     foreach (IResponder responder in Responders) {
                         if (responder.CanRespond(context)) {
                             await Say(responder.GetResponse(context), context);
@@ -260,7 +304,11 @@ namespace MargieBot
             await Say(message, null);
         }
 
-        private async Task Say(BotMessage message, ResponseContext context)
+        private static KeyValuePair<TK, TV> MakeKeyValue<TK, TV>(TK key, TV val) {
+            return new KeyValuePair<TK, TV>(key, val);
+        }
+
+        private async Task Say(BotMessage message, SlackMessage context)
         {
             string chatHubID = null;
 
@@ -270,26 +318,27 @@ namespace MargieBot
             else if(context != null && context.Message.ChatHub != null) {
                 chatHubID = context.Message.ChatHub.ID;
             }
-
+                
             if(chatHubID != null) {
-                NoobWebClient client = new NoobWebClient();
 
-                List<string> values = new List<string>() {
-                    "token", this.SlackKey,
-                    "channel", chatHubID,
-                    "text", message.Text,
-                    "as_user", "true"
+               
+                
+                var client = new HttpClient();
+
+                List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>() {
+                    MakeKeyValue("token", this.SlackKey),
+                    MakeKeyValue("channel", chatHubID),
+                    MakeKeyValue("text", message.Text),
+                    MakeKeyValue("as_user", "true")
                 };
 
                 if (message.Attachments.Count > 0) {
-                    values.Add("attachments");
-                    values.Add(JsonConvert.SerializeObject(message.Attachments));
+                    values.Add(MakeKeyValue("attachments", JsonConvert.SerializeObject(message.Attachments)));
                 }
 
-                await client.GetResponse(
+                await client.PostAsync(
                     "https://slack.com/api/chat.postMessage",
-                    RequestMethod.Post,
-                    values.ToArray()
+                    new FormUrlEncodedContent(values)
                 );
             }
             else {

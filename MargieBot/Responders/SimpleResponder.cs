@@ -6,20 +6,20 @@ namespace MargieBot.Responders
 {
     public class SimpleResponder : IResponder
     {
-        public Func<ResponseContext, bool> CanRespondFunction { get; set; }
-        public List<Func<ResponseContext, BotMessage>> GetResponseFunctions { get; set; }
+        public Func<SlackMessage, bool> CanRespondFunction { get; set; }
+        public List<Func<SlackMessage, BotMessage>> GetResponseFunctions { get; set; }
 
         public SimpleResponder()
         {
-            GetResponseFunctions = new List<Func<ResponseContext, BotMessage>>();
+            GetResponseFunctions = new List<Func<SlackMessage, BotMessage>>();
         }
 
-        public bool CanRespond(ResponseContext context)
+        public bool CanRespond(SlackMessage context)
         {
             return CanRespondFunction(context);
         }
 
-        public BotMessage GetResponse(ResponseContext context)
+        public BotMessage GetResponse(SlackMessage context)
         {
             if (GetResponseFunctions.Count == 0) {
                 throw new InvalidOperationException("Attempted to get a response for \"" + context.Message.Text + "\", but no valid responses have been registered.");

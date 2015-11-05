@@ -22,12 +22,12 @@ namespace MargieBot.ExampleResponders.Responders
             WundergroundAPIKey = apiKey;
         }
 
-        public bool CanRespond(ResponseContext context)
+        public bool CanRespond(SlackMessage context)
         {
             return (context.Message.MentionsBot || context.Message.ChatHub.Type == SlackChatHubType.DM) && Regex.IsMatch(context.Message.Text, @"\bweather\b");
         }
 
-        public BotMessage GetResponse(ResponseContext context)
+        public BotMessage GetResponse(SlackMessage context)
         {
             string data = string.Empty;
             if (LastDataGrab != null && LastDataGrab.Value > DateTime.Now.AddMinutes(-10)) {

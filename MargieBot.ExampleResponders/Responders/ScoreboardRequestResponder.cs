@@ -10,12 +10,12 @@ namespace MargieBot.ExampleResponders.Responders
 {
     public class ScoreboardRequestResponder : IResponder
     {
-        public bool CanRespond(ResponseContext context)
+        public bool CanRespond(SlackMessage context)
         {
             return (context.Message.MentionsBot || context.Message.ChatHub.Type == SlackChatHubType.DM) && Regex.IsMatch(context.Message.Text, @"\bscore\b", RegexOptions.IgnoreCase);
         }
 
-        public BotMessage GetResponse(ResponseContext context)
+        public BotMessage GetResponse(SlackMessage context)
         {
             IReadOnlyDictionary<string, int> scores = context.Get<Scorebook>().GetScores();
 

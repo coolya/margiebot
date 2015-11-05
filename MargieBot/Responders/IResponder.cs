@@ -4,7 +4,7 @@ namespace MargieBot.Responders
 {
     public interface IResponder
     {
-        bool CanRespond(ResponseContext context);
-        BotMessage GetResponse(ResponseContext context);
+        bool CanRespond(SlackMessage context);
+        BotMessage GetResponse(SlackMessage context);
     }
 }

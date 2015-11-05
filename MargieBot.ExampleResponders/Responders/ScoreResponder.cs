@@ -23,7 +23,7 @@ namespace MargieBot.ExampleResponders.Responders
         private Scorebook Scorebook { get; set; }
         private string TeamID { get; set; }
 
-        public bool CanRespond(ResponseContext context)
+        public bool CanRespond(SlackMessage context)
         {
             if (this.Scorebook == null || this.TeamID != context.TeamID) {
                 // start up scorebook for this team
@@ -36,7 +36,7 @@ namespace MargieBot.ExampleResponders.Responders
             return !context.Message.User.IsSlackbot && Regex.IsMatch(context.Message.Text, SCORE_REGEX);
         }
 
-        public BotMessage GetResponse(ResponseContext context)
+        public BotMessage GetResponse(SlackMessage context)
         {
             // perform scoring
             List<ScoringResult> scoringResults = new List<ScoringResult>();

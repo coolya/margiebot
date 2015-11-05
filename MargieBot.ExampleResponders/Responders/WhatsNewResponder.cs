@@ -8,12 +8,12 @@ namespace MargieBot.ExampleResponders.Responders
 {
     public class WhatsNewResponder : IResponder
     {
-        public bool CanRespond(ResponseContext context)
+        public bool CanRespond(SlackMessage context)
         {
             return (context.Message.MentionsBot || context.Message.ChatHub.Type == SlackChatHubType.DM) && Regex.IsMatch(context.Message.Text, @"\b(what's new)\b", RegexOptions.IgnoreCase);
         }
 
-        public BotMessage GetResponse(ResponseContext context)
+        public BotMessage GetResponse(SlackMessage context)
         {
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
 

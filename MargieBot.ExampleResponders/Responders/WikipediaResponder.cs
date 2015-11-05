@@ -12,12 +12,12 @@ namespace MargieBot.ExampleResponders.Responders
         private const string WIKI_SINGLEWORD_REGEX = @"\b(wiki|wikipedia)\b\s+(?<term>\w+)";
         private const string WIKI_MULTIWORD_REGEX = @"\b(wiki|wikipedia)\b\s+""(?<term>[\s\S]+)""";
 
-        public bool CanRespond(ResponseContext context)
+        public bool CanRespond(SlackMessage context)
         {
             return (context.Message.ChatHub.Type == SlackChatHubType.DM || context.Message.MentionsBot) && (Regex.IsMatch(context.Message.Text, WIKI_MULTIWORD_REGEX) || Regex.IsMatch(context.Message.Text, WIKI_SINGLEWORD_REGEX));
         }
 
-        public BotMessage GetResponse(ResponseContext context)
+        public BotMessage GetResponse(SlackMessage context)
         {
             Match match = Regex.Match(context.Message.Text, WIKI_MULTIWORD_REGEX);
             string searchTerm = string.Empty;
