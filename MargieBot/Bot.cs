@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Threading;
 using MargieBot.EventHandlers;
 using MargieBot.Models;
-using MargieBot.Responders;
 using MargieBot.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -77,8 +77,7 @@ namespace MargieBot
                 BotNameRegex = string.Empty;
             }
         }
-        public List<IResponder> Responders { get; private set; }
-        
+
         public IReadOnlyList<SlackChatHub> ConnectedChannels
         {
             get { return ConnectedHubs.Values.Where(hub => hub.Type == SlackChatHubType.Channel).ToList(); }
@@ -114,6 +113,8 @@ namespace MargieBot
             }
         }
 
+        private Timer Tmr;
+
         public Dictionary<string, object> ResponseContext { get; private set; }
         public string SlackKey { get; private set; }
         public string TeamID { get; private set; }
@@ -127,7 +128,6 @@ namespace MargieBot
             // get the books ready
             Aliases = new List<string>();
             ResponseContext = new Dictionary<string, object>();
-            Responders = new List<IResponder>();
             UserNameCache = new Dictionary<string, string>();
         }
 
@@ -221,6 +221,15 @@ namespace MargieBot
                 UserName = null;
             };
             WebSocket.Connect();
+            Tmr = new Timer(o => {
+                if(!WebSocket.Ping())
+                {
+                    this.Tmr.Dispose();
+                    this.Tmr = null;
+                    this.Connect(this.SlackKey);
+
+                }}, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
+
         }
 
         public void Disconnect()
@@ -288,13 +297,7 @@ namespace MargieBot
                     {
                         obs.OnNext(context);
                     }
-
-                    foreach (IResponder responder in Responders) {
-                        if (responder.CanRespond(context)) {
-                            await Say(responder.GetResponse(context), context);
-                            context.BotHasResponded = true;
-                        }
-                    }
+                        
                 }
             }
 

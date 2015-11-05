@@ -60,9 +60,6 @@
     <Compile Include="EventHandlers\MargieDebuggingEventHandler.cs" />
     <Compile Include="EventHandlers\MargieMessageReceivedEventHandler.cs" />
     <Compile Include="Bot.cs" />
-    <Compile Include="Extensions\BotExtensions.cs" />
-    <Compile Include="Responders\IResponder.cs" />
-    <Compile Include="Responders\SimpleResponder.cs" />
     <Compile Include="Models\BotMessage.cs" />
     <Compile Include="Models\SlackAttachment.cs" />
     <Compile Include="Models\SlackAttachmentField.cs" />
@@ -93,4 +90,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Responders\" />
+    <Folder Include="Extensions\" />
+  </ItemGroup>
 </Project>
