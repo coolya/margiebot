@@ -235,14 +235,16 @@ namespace MargieBot
                 string channelID = jObject["channel"].Value<string>();
                 SlackChatHub hub = null;
 
-                if(ConnectedHubs.ContainsKey(channelID)) {
+                if (ConnectedHubs.ContainsKey(channelID))
+                {
                     hub = ConnectedHubs[channelID];
                 }
-                else {
+                else
+                {
                     hub = SlackChatHub.FromID(channelID);
-                    List<SlackChatHub> hubs = new List<SlackChatHub>();
-                    hubs.AddRange(ConnectedHubs.Values);
-                    hubs.Add(hub);
+                    Dictionary<string, SlackChatHub> hubs = new Dictionary<string, SlackChatHub>(ConnectedHubs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+                    hubs.Add(hub.ID, hub);
+                    ConnectedHubs = hubs;
                 }
 
                 string messageText = (jObject["text"] != null ? jObject["text"].Value<string>() : null);
@@ -311,6 +313,10 @@ namespace MargieBot
         private async Task Say(BotMessage message, SlackMessage context)
         {
             string chatHubID = null;
+            if (message == null)
+            {
+                return;
+            }
 
             if(message.ChatHub != null) {
                 chatHubID = message.ChatHub.ID;
@@ -335,7 +341,7 @@ namespace MargieBot
                 if (message.Attachments.Count > 0) {
                     values.Add(MakeKeyValue("attachments", JsonConvert.SerializeObject(message.Attachments)));
                 }
-
+                    
                 await client.PostAsync(
                     "https://slack.com/api/chat.postMessage",
                     new FormUrlEncodedContent(values)
